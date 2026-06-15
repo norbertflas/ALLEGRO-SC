@@ -16,6 +16,7 @@ class Config:
     max_delay_s: float
     nav_timeout_ms: int
     proxy: str | None
+    debug_dir: str
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -34,4 +35,5 @@ class Config:
             max_delay_s=float(os.environ.get("MAX_DELAY_S", "5.0")),
             nav_timeout_ms=int(os.environ.get("NAV_TIMEOUT_MS", "45000")),
             proxy=os.environ.get("PROXY_URL") or None,
+            debug_dir=os.environ.get("DEBUG_HTML_DIR", "debug"),
         )

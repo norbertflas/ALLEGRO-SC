@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from allegro_sc.parsers import parse_offers, parse_price
+from allegro_sc.parsers import looks_blocked, page_title, parse_offers, parse_price
 
 FIXTURE = Path(__file__).parent / "fixtures" / "listing_sample.html"
 
@@ -35,6 +35,19 @@ def test_parse_offers_extracts_valid_cards_only():
     assert second.price == 1234.50
     assert second.is_smart is False
     assert second.position == 2
+
+
+def test_block_detection_and_title():
+    listing = FIXTURE.read_text(encoding="utf-8")
+    assert looks_blocked(listing) is False
+    assert page_title(listing) == "Allegro listing sample"
+
+    challenge = (
+        "<html><head><title>Pardon Our Interruption</title></head>"
+        "<body>Wykryliśmy nietypowy ruch...</body></html>"
+    )
+    assert looks_blocked(challenge) is True
+    assert page_title(challenge) == "Pardon Our Interruption"
 
 
 def test_start_position_offsets_numbering():
