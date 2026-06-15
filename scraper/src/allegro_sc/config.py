@@ -35,6 +35,7 @@ class Config:
     nav_timeout_ms: int
     proxy: str | None
     debug_dir: str
+    csv_dir: str | None
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -54,4 +55,5 @@ class Config:
             nav_timeout_ms=int(os.environ.get("NAV_TIMEOUT_MS", "45000")),
             proxy=os.environ.get("PROXY_URL") or None,
             debug_dir=os.environ.get("DEBUG_HTML_DIR", "debug"),
+            csv_dir=os.environ.get("CSV_DIR") or None,
         )

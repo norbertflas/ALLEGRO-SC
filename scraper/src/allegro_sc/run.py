@@ -18,6 +18,7 @@ from pathlib import Path
 from .browser import browser_session, fetch_html
 from .client import WorkerClient
 from .config import Config, load_env_file
+from .export import write_csv
 from .models import IngestBatch, Offer, Target
 from .parsers import keyword_url, looks_blocked, page_title, parse_offers, shop_url
 
@@ -100,6 +101,8 @@ async def run() -> None:
     async with browser_session(config) as context:
         for target in targets:
             all_offers.extend(await scrape_target(context, config, target))
+
+    write_csv(config, run_id, scraped_at, all_offers)
 
     batch = IngestBatch(run_id=run_id, scraped_at=scraped_at, offers=all_offers)
     if not all_offers:
