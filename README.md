@@ -30,18 +30,18 @@ Cloudflare Pages (dashboard)  ◀── GET /offers, /diff ──┘
 
 | Path | Contents | Status |
 |------|----------|--------|
-| `worker/` | Cloudflare Worker API + D1 schema/migrations | ✅ Stage 1 — implemented |
-| `dashboard/` | Cloudflare Pages frontend | ⏳ Stage 2 |
-| `scraper/` | Python + Playwright scraper | ⏳ Stage 3 |
-| `.github/workflows/` | Scheduled scrape workflow | ⏳ Stage 3 |
+| `worker/` | Cloudflare Worker API + D1 schema/migrations | ✅ implemented |
+| `scraper/` | Python + Playwright scraper | ✅ implemented |
+| `.github/workflows/` | Scheduled scrape workflow | ✅ implemented |
+| `dashboard/` | Cloudflare Pages frontend | ⏳ next |
 
-See [`worker/README.md`](worker/README.md) for the API, data model, and setup.
+See [`worker/README.md`](worker/README.md) for the API and [`scraper/README.md`](scraper/README.md) for the scraper.
 
 ## Build order
 
-1. **Backend first** (done): D1 schema + Worker with `/ingest`, `/targets`,
-   `/offers`, `/diff` and bearer-token auth. The stable, testable seam — the
-   dashboard and scraper develop against it.
-2. **Dashboard**: read from the Worker, chart price/position history, manage targets.
-3. **Scraper + Actions**: Playwright targeting the live `/ingest`, on a
+1. **Backend** (done): D1 schema + Worker with `/ingest`, `/targets`,
+   `/offers`, `/diff` and bearer-token auth. The stable, testable seam.
+2. **Scraper + Actions** (done): Playwright targeting the live `/ingest`, on a
    `0 6 * * 1,3,5,0` cron (Mon/Wed/Fri/Sun, 06:00).
+3. **Dashboard** (next): read from the Worker, chart price/position history,
+   manage targets.
