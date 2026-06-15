@@ -4,6 +4,24 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+from pathlib import Path
+
+
+def load_env_file(path: str = ".env") -> None:
+    """Load KEY=VALUE lines from a local .env into the environment (for local runs).
+
+    Existing environment variables win, so this is a no-op on GitHub Actions.
+    """
+    p = Path(path)
+    if not p.exists():
+        return
+    for raw in p.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
 
 
 @dataclass(frozen=True)

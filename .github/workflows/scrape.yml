@@ -1,9 +1,12 @@
 name: scrape
 
 on:
-  schedule:
-    # 06:00 UTC on Mon, Wed, Fri, Sun
-    - cron: "0 6 * * 1,3,5,0"
+  # Scheduled runs are disabled: GitHub's runner IPs are datacenter IPs and
+  # Allegro/Akamai blocks them, so cloud runs only ever get a challenge page.
+  # Run the scraper locally instead (scraper/run_local.sh / .bat) from a home IP.
+  # To re-enable later (e.g. after adding PROXY_URL), uncomment the schedule:
+  # schedule:
+  #   - cron: "0 6 * * 1,3,5,0"   # 06:00 UTC Mon, Wed, Fri, Sun
   workflow_dispatch:
     inputs:
       max_pages:

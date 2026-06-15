@@ -58,6 +58,12 @@ async def fetch_html(context: BrowserContext, url: str, config: Config) -> str:
     try:
         await page.goto(url, wait_until="domcontentloaded", timeout=config.nav_timeout_ms)
         await _maybe_accept_consent(page)
+        # Allegro renders the listing client-side; let the network settle so the
+        # offer cards exist before we read the HTML (best-effort).
+        try:
+            await page.wait_for_load_state("networkidle", timeout=15000)
+        except Exception:
+            pass
         # human-ish pause so we don't hammer the listing
         delay_ms = int(random.uniform(config.min_delay_s, config.max_delay_s) * 1000)
         await page.wait_for_timeout(delay_ms)
