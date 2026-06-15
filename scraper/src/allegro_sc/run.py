@@ -17,7 +17,7 @@ from pathlib import Path
 
 from .browser import browser_session, fetch_html
 from .client import WorkerClient
-from .config import Config
+from .config import Config, load_env_file
 from .models import IngestBatch, Offer, Target
 from .parsers import keyword_url, looks_blocked, page_title, parse_offers, shop_url
 
@@ -111,6 +111,7 @@ async def run() -> None:
 
 
 def main() -> None:
+    load_env_file()
     asyncio.run(run())
 
 

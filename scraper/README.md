@@ -1,8 +1,30 @@
 # ALLEGRO-SC Scraper
 
-Python + Playwright scraper. Runs on GitHub Actions (Mon/Wed/Fri/Sun at 06:00 UTC),
-pulls its work list from the Worker, scrapes Allegro, and pushes one batch back to
-`POST /ingest`. It never touches D1 directly.
+Python + Playwright scraper. Pulls its work list from the Worker, scrapes Allegro,
+and pushes one batch back to `POST /ingest`. It never touches D1 directly.
+
+> **Run it from your own computer, not GitHub Actions.** Allegro/Akamai blocks
+> GitHub's datacenter IPs (every cloud run only gets a challenge page), so the
+> scheduled workflow is disabled. From a home IP the block normally doesn't apply.
+
+## ⭐ Uruchomienie z własnego komputera (krok po kroku)
+
+Potrzebujesz: zainstalowanego **Pythona 3.11+** i **git**.
+
+1. Pobierz projekt (jeśli jeszcze nie masz):
+   `git clone https://github.com/norbertflas/ALLEGRO-SC.git`
+2. Wejdź do folderu scrapera: `cd ALLEGRO-SC/scraper`
+3. Skopiuj `.env.example` do `.env` i uzupełnij `WORKER_URL` oraz `INGEST_TOKEN`
+   (te same co w dashboardzie).
+4. Uruchom:
+   - **Windows:** kliknij dwukrotnie `run_local.bat` (lub w terminalu: `run_local.bat`)
+   - **Mac / Linux:** `bash run_local.sh`
+
+Skrypt sam stworzy środowisko, doinstaluje zależności i przeglądarkę, po czym
+odpali scraper. `HEADLESS=0` w `.env` sprawia, że zobaczysz okno przeglądarki —
+gdyby pojawiła się captcha, możesz ją rozwiązać ręcznie. Wyniki sprawdzisz w
+dashboardzie. Powtarzaj, kiedy chcesz odświeżyć dane (np. co 2 dni), a `/diff`
+porówna kolejne przebiegi.
 
 ## Layout
 
