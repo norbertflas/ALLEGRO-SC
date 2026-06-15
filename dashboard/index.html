@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ALLEGRO-SC Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>ALLEGRO-SC</h1>
+    <p class="sub">Monitor cen i ofert — porównanie kolejnych przebiegów</p>
+  </header>
+
+  <section class="card" id="connection">
+    <h2>Połączenie</h2>
+    <div class="row">
+      <label>Worker URL
+        <input id="workerUrl" type="text" placeholder="https://allegro-sc-worker.workers.dev" />
+      </label>
+      <label>Token
+        <input id="token" type="password" placeholder="INGEST_TOKEN" />
+      </label>
+      <button id="saveConn">Zapisz i połącz</button>
+    </div>
+    <p id="connStatus" class="status"></p>
+  </section>
+
+  <main id="app" hidden>
+    <section class="card">
+      <h2>Cele scrapowania (targets)</h2>
+      <div class="row">
+        <select id="newTargetType">
+          <option value="keyword">keyword</option>
+          <option value="shop">shop</option>
+        </select>
+        <input id="newTargetValue" type="text" placeholder="np. filament petg / SuperSprzedawca_pl" />
+        <button id="addTarget">Dodaj</button>
+      </div>
+      <table id="targetsTable">
+        <thead><tr><th>Typ</th><th>Wartość</th><th>Aktywny</th><th>Akcje</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Porównanie przebiegów (diff)</h2>
+      <div class="row">
+        <select id="diffTarget"></select>
+        <button id="loadDiff">Porównaj ostatnie dwa przebiegi</button>
+      </div>
+      <div id="diffSummary" class="summary"></div>
+      <div id="diffDetails"></div>
+    </section>
+
+    <section class="card">
+      <h2>Historia ceny oferty</h2>
+      <div class="row">
+        <input id="offerId" type="text" placeholder="offer_id (np. 12345678901)" />
+        <button id="loadHistory">Pokaż wykres</button>
+      </div>
+      <canvas id="priceChart" height="120"></canvas>
+      <div id="historyMeta" class="status"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Dane czytane z Cloudflare Worker API. Token trzymany lokalnie w przeglądarce.</p>
+  </footer>
+</body>
+</html>
