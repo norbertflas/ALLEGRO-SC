@@ -1,0 +1,14 @@
+name = "allegro-sc-worker"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+# D1 binding. Create the database with:
+#   npx wrangler d1 create allegro-sc
+# then paste the printed database_id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "allegro-sc"
+database_id = "REPLACE_WITH_DATABASE_ID"
+
+# INGEST_TOKEN is NOT stored here. Set it as a secret:
+#   npx wrangler secret put INGEST_TOKEN
