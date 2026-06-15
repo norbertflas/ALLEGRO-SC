@@ -22,6 +22,30 @@ OFFER_ID_RE = re.compile(r"/oferta/(?:[^?#]*?-)?(\d{6,})")
 PRICE_RE = re.compile(r"(\d[\d\s ]*,\d{2})")
 
 
+# Phrases Allegro/Akamai serve on a bot-challenge / captcha page instead of results.
+_BLOCK_MARKERS = (
+    "pardon our interruption",
+    "wykryliśmy nietypowy ruch",
+    "nietypowy ruch",
+    "captcha",
+    "are you a robot",
+    "verify you are human",
+    "access denied",
+    "reference #",
+)
+
+
+def page_title(html: str) -> str:
+    soup = BeautifulSoup(html, "lxml")
+    return soup.title.get_text(strip=True) if soup.title else ""
+
+
+def looks_blocked(html: str) -> bool:
+    """Heuristic: did we get an Akamai/captcha challenge rather than a listing?"""
+    sample = (html or "")[:4000].lower()
+    return any(marker in sample for marker in _BLOCK_MARKERS)
+
+
 def parse_price(text: str) -> Optional[float]:
     match = PRICE_RE.search(text or "")
     if not match:

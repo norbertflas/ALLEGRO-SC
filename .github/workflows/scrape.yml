@@ -44,3 +44,12 @@ jobs:
           MAX_PAGES: ${{ github.event.inputs.max_pages || '3' }}
           HEADLESS: "1"
         run: allegro-sc-scrape
+
+      - name: Upload debug HTML (diagnostics for empty results)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-html
+          path: scraper/debug/
+          if-no-files-found: ignore
+          retention-days: 7

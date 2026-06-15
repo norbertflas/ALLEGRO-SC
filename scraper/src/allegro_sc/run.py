@@ -10,19 +10,37 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 
 from .browser import browser_session, fetch_html
 from .client import WorkerClient
 from .config import Config
 from .models import IngestBatch, Offer, Target
-from .parsers import keyword_url, parse_offers, shop_url
+from .parsers import keyword_url, looks_blocked, page_title, parse_offers, shop_url
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s"
 )
 log = logging.getLogger("allegro_sc")
+
+
+def _dump_html(config: Config, target: Target, page: int, html: str) -> None:
+    """Save a page's HTML so the workflow can upload it as an artifact.
+
+    Lets us tell apart an Akamai/captcha wall from a selector mismatch without guessing.
+    """
+    try:
+        out_dir = Path(config.debug_dir)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        slug = re.sub(r"[^A-Za-z0-9._-]+", "_", target.target_value)[:80]
+        path = out_dir / f"{target.target_type}_{slug}_p{page}.html"
+        path.write_text(html, encoding="utf-8")
+        log.info("saved debug HTML: %s (%d bytes)", path, len(html))
+    except Exception as exc:  # diagnostics must never break the run
+        log.warning("failed to save debug HTML: %s", exc)
 
 
 async def scrape_target(context, config: Config, target: Target) -> list[Offer]:
@@ -42,7 +60,14 @@ async def scrape_target(context, config: Config, target: Target) -> list[Offer]:
 
         offers = parse_offers(html, target.target_type, target.target_value, position)
         if not offers:
-            log.info("no offers on page %d, stopping pagination", page)
+            blocked = looks_blocked(html)
+            log.warning(
+                "no offers on page %d (title=%r, blocked=%s) — saving HTML for diagnosis",
+                page,
+                page_title(html),
+                blocked,
+            )
+            _dump_html(config, target, page, html)
             break
 
         for offer in offers:
