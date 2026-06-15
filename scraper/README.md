@@ -26,6 +26,28 @@ gdyby pojawiła się captcha, możesz ją rozwiązać ręcznie. Wyniki sprawdzis
 dashboardzie. Powtarzaj, kiedy chcesz odświeżyć dane (np. co 2 dni), a `/diff`
 porówna kolejne przebiegi.
 
+## Eksport do Power BI (CSV)
+
+Przy każdym uruchomieniu, jeśli w `.env` ustawiony jest `CSV_DIR` (domyślnie
+`output`), scraper zapisuje obok wysyłki do bazy plik
+`output/offers_<run_id>.csv` — płaska tabela, jeden wiersz na ofertę. Kolumny:
+
+```
+run_id, scraped_at, source_type, source_value, offer_id, title, price,
+is_smart, seller_name, position
+```
+
+Kolejne przebiegi dokładają nowe pliki (nie nadpisują), więc w folderze rośnie
+pełna historia. W **Power BI Desktop**:
+
+1. **Pobierz dane → Folder** → wskaż folder `scraper/output`.
+2. **Połącz i przekształć** → Power BI złączy wszystkie pliki `offers_*.csv` w jedną tabelę.
+3. Ustaw typy kolumn (`price` = liczba dziesiętna, `scraped_at` = data/godzina) i buduj wizualizacje — np. cena wg `offer_id` w czasie, albo zmiany pozycji.
+
+> Alternatywa „na żywo": Power BI potrafi też ciągnąć dane wprost z Workera
+> (Pobierz dane → Sieć Web → `…/offers`, z nagłówkiem `Authorization: Bearer <token>`),
+> bez plików. CSV jest prostszy na start; web-connector daje zawsze aktualne dane.
+
 ## Layout
 
 ```
